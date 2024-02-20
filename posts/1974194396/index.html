@@ -1,0 +1,774 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blogs/img/hand.png">
+  <link rel="icon" href="/blogs/img/hand.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#848582">
+  <meta name="author" content="清晨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1 概述 1.1 XTuner 一个大语言模型微调工具箱 由 MMRazor 和 MMDeploy 联合开发。 1.2 支持的开源LLM (2023.11.01)  InternLM ✅ Llama，Llama2 ChatGLM2，ChatGLM3 Qwen Baichuan，Baichuan2 ...... Zephyr  1.3 特色  🤓 傻瓜化 以 配置文件 的形式封装了大部分微调场景，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【书生·浦语大模型实战营】第4节：XTuner 大模型单卡低成本微调实战（作业版）">
+<meta property="og:url" content="https://zghhui.github.io/blogs/posts/1974194396/index.html">
+<meta property="og:site_name" content="清晨">
+<meta property="og:description" content="1 概述 1.1 XTuner 一个大语言模型微调工具箱 由 MMRazor 和 MMDeploy 联合开发。 1.2 支持的开源LLM (2023.11.01)  InternLM ✅ Llama，Llama2 ChatGLM2，ChatGLM3 Qwen Baichuan，Baichuan2 ...... Zephyr  1.3 特色  🤓 傻瓜化 以 配置文件 的形式封装了大部分微调场景，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://cdn.zghhui.me/img/sspu.jpg">
+<meta property="article:published_time" content="2024-02-20T03:25:39.538Z">
+<meta property="article:modified_time" content="2024-02-20T03:41:34.019Z">
+<meta property="article:author" content="清晨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://cdn.zghhui.me/img/sspu.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>【书生·浦语大模型实战营】第4节：XTuner 大模型单卡低成本微调实战（作业版） - 清晨</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/blogs/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/blogs/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/blogs/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"zghhui.github.io","root":"/blogs/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":21844343,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/blogs/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/blogs/js/utils.js" ></script>
+  <script  src="/blogs/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+    <!-- 51.la Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('//js.users.51.la/21844343.js');
+      }
+    </script>
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/blogs/">
+      <strong>清晨</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blogs/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blogs/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blogs/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blogs/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blogs/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/blogs/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="【书生·浦语大模型实战营】第4节：XTuner 大模型单卡低成本微调实战（作业版）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-02-20 03:25" pubdate>
+          2024年2月20日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          997 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          9 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【书生·浦语大模型实战营】第4节：XTuner 大模型单卡低成本微调实战（作业版）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1 概述"></a>1 概述</h2><h3 id="1-1-XTuner"><a href="#1-1-XTuner" class="headerlink" title="1.1 XTuner"></a>1.1 XTuner</h3><p><strong>一个大语言模型微调工具箱</strong> <em>由</em> <em>MMRazor</em> <em>和</em> <em>MMDeploy</em> <em>联合开发。</em></p>
+<h3 id="1-2-支持的开源LLM-2023-11-01"><a href="#1-2-支持的开源LLM-2023-11-01" class="headerlink" title="1.2 支持的开源LLM (2023.11.01)"></a>1.2 支持的开源LLM (2023.11.01)</h3><ul>
+<li><strong><a target="_blank" rel="noopener" href="https://huggingface.co/internlm/internlm-7b">InternLM</a></strong> ✅</li>
+<li><a target="_blank" rel="noopener" href="https://huggingface.co/meta-llama">Llama，Llama2</a></li>
+<li><a target="_blank" rel="noopener" href="https://huggingface.co/THUDM/chatglm2-6b">ChatGLM2</a>，<a target="_blank" rel="noopener" href="https://huggingface.co/THUDM/chatglm3-6b-base">ChatGLM3</a></li>
+<li><a target="_blank" rel="noopener" href="https://huggingface.co/Qwen/Qwen-7B">Qwen</a></li>
+<li><a target="_blank" rel="noopener" href="https://huggingface.co/baichuan-inc/Baichuan-7B">Baichuan</a>，<a target="_blank" rel="noopener" href="https://huggingface.co/baichuan-inc/Baichuan2-7B-Base">Baichuan2</a></li>
+<li><strong>……</strong></li>
+<li><a target="_blank" rel="noopener" href="https://huggingface.co/HuggingFaceH4/zephyr-7b-beta">Zephyr</a></li>
+</ul>
+<h3 id="1-3-特色"><a href="#1-3-特色" class="headerlink" title="1.3 特色"></a>1.3 特色</h3><ul>
+<li><strong>🤓</strong> <strong>傻瓜化</strong> 以 配置文件 的形式封装了大部分微调场景，<strong>0基础的非专业人员也能一键开始微调</strong>。</li>
+<li><strong>🍃</strong> <strong>轻量级</strong>  对于 7B 参数量的LLM，<strong>微调所需的最小显存仅为 8GB</strong> ： <strong>消费级显卡✅，colab✅</strong></li>
+</ul>
+<h3 id="1-4-微调原理"><a href="#1-4-微调原理" class="headerlink" title="1.4 微调原理"></a>1.4 微调原理</h3><p><strong>※ 因此，你找到了一种叫</strong> <strong>LoRA</strong> 的方法：<strong>只对玩具中的某些零件进行改动，而不是对整个玩具进行全面改动</strong>。</p>
+<p><strong>※ 而</strong> <strong>QLoRA</strong> 是 LoRA 的一种改进：如果你手里只有一把生锈的螺丝刀，也能改造你的玩具。</p>
+<h2 id="2-快速上手"><a href="#2-快速上手" class="headerlink" title="2 快速上手"></a>2 快速上手</h2><h3 id="2-1-安装"><a href="#2-1-安装" class="headerlink" title="2.1 安装"></a>2.1 安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"> 在 InternStudio 平台，则从本地 <span class="hljs-built_in">clone</span> 一个已有 pytorch 2.0.1 的环境：<br> /root/share/install_conda_env_internlm_base.sh xtuner0.1.9<br> <br> <span class="hljs-comment"># 激活环境</span><br> conda activate xtuner0.1.9<br> <span class="hljs-comment"># 进入家目录 （~的意思是 “当前用户的home路径”）</span><br> <span class="hljs-built_in">cd</span> ~<br> <span class="hljs-comment"># 创建版本文件夹并进入，以跟随本教程</span><br> <span class="hljs-built_in">mkdir</span> xtuner019 &amp;&amp; <span class="hljs-built_in">cd</span> xtuner019<br> <br> <br> <span class="hljs-comment"># 拉取 0.1.9 的版本源码</span><br> git <span class="hljs-built_in">clone</span> -b v0.1.9  https://github.com/InternLM/xtuner<br> <span class="hljs-comment"># 无法访问github的用户请从 gitee 拉取:</span><br> <span class="hljs-comment"># git clone -b v0.1.9 https://gitee.com/Internlm/xtuner</span><br> <br> <span class="hljs-comment"># 进入源码目录</span><br> <span class="hljs-built_in">cd</span> xtuner<br> <br> <span class="hljs-comment"># 从源码安装 XTuner</span><br> pip install -e <span class="hljs-string">&#x27;.[all]&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>安装完后，就开始搞搞准备工作了。（准备在 oasst1 数据集上微调 internlm-7b-chat）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"> <span class="hljs-comment"># 创建一个微调 oasst1 数据集的工作路径，进入</span><br> <span class="hljs-built_in">mkdir</span> ~/ft-oasst1 &amp;&amp; <span class="hljs-built_in">cd</span> ~/ft-oasst1<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.zghhui.me/img/image-20240219211206516.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<h3 id="2-2-微调"><a href="#2-2-微调" class="headerlink" title="2.2 微调"></a>2.2 微调</h3><h4 id="2-2-1-准备配置文件"><a href="#2-2-1-准备配置文件" class="headerlink" title="2.2.1 准备配置文件"></a>2.2.1 准备配置文件</h4><p><img src="https://cdn.zghhui.me/img/image-20240219211108114.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<p><strong>拷贝一个配置文件到当前目录</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell"> <span class="hljs-built_in">cd</span> ~/<span class="hljs-built_in">ft</span><span class="hljs-literal">-oasst1</span><br> xtuner <span class="hljs-built_in">copy-cfg</span> internlm_chat_7b_qlora_oasst1_e3 .<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.zghhui.me/img/image-20240219210953051.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<h4 id="2-2-2数据准备"><a href="#2-2-2数据准备" class="headerlink" title="2.2.2数据准备"></a>2.2.2数据准备</h4><p><strong>创建</strong><code>data</code>文件夹用于存放用于训练的数据集</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"> <span class="hljs-built_in">mkdir</span> -p /root/personal_assistant/data &amp;&amp; <span class="hljs-built_in">cd</span> /root/personal_assistant/data<br></code></pre></td></tr></table></figure>
+
+<p><strong>在</strong><code>data</code>目录下创建一个json文件<code>personal_assistant.json</code>作为本次微调所使用的数据集。json中内容可参考下方(复制粘贴n次做数据增广，数据量小无法有效微调，下面仅用于展示格式，下面也有生成脚本)</p>
+<p><strong>其中</strong><code>conversation</code>表示一次对话的内容，<code>input</code>为输入，即用户会问的问题，<code>output</code>为输出，即想要模型回答的答案。</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs prolog"> [<br>     &#123;<br>         <span class="hljs-string">&quot;conversation&quot;</span>: [<br>             &#123;<br>                 <span class="hljs-string">&quot;input&quot;</span>: <span class="hljs-string">&quot;请介绍一下你自己&quot;</span>,<br>                 <span class="hljs-string">&quot;output&quot;</span>: <span class="hljs-string">&quot;我是张国辉同学的小助手，内在是上海AI实验室书生·浦语的7B大模型哦, 欢迎向我提问呀，我可是无所不知、无所不晓~&quot;</span><br>             &#125;<br>         ]<br>     &#125;,<br>     &#123;<br>         <span class="hljs-string">&quot;conversation&quot;</span>: [<br>             &#123;<br>                 <span class="hljs-string">&quot;input&quot;</span>: <span class="hljs-string">&quot;请做一下自我介绍&quot;</span>,<br>                 <span class="hljs-string">&quot;output&quot;</span>: <span class="hljs-string">&quot;我是张国辉同学的小助手，内在是上海AI实验室书生·浦语的7B大模型哦, 欢迎向我提问呀，我可是无所不知、无所不晓~&quot;</span><br>             &#125;<br>         ]<br>     &#125;<br> ]<br></code></pre></td></tr></table></figure>
+
+<p><strong>修改拷贝后的文件internlm_chat_7b_qlora_oasst1_e3_copy.py，修改下述位置：</strong></p>
+<p><img src="https://cdn.zghhui.me/img/image-20240219214225267.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<h4 id="2-2-4-开始微调"><a href="#2-2-4-开始微调" class="headerlink" title="2.2.4 开始微调"></a>2.2.4 开始微调</h4><p><strong>训练：</strong></p>
+<p><strong>xtuner train ${CONFIG_NAME_OR_PATH}</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"> <span class="hljs-comment"># 单卡</span><br> <span class="hljs-comment">## 用刚才改好的config文件训练</span><br> xtuner train ./internlm_chat_7b_qlora_oasst1_e3_copy.py<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-3-微调后参数转换-合并"><a href="#2-3-微调后参数转换-合并" class="headerlink" title="2.3 微调后参数转换&#x2F;合并"></a>2.3 微调后参数转换&#x2F;合并</h3><p><strong>训练后的pth格式参数转Hugging Face格式</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash"> <span class="hljs-comment"># 创建用于存放Hugging Face格式参数的hf文件夹</span><br> <span class="hljs-built_in">mkdir</span> /root/personal_assistant/config/work_dirs/hf<br> <br> <span class="hljs-built_in">export</span> MKL_SERVICE_FORCE_INTEL=1<br> <br> <span class="hljs-comment"># 配置文件存放的位置</span><br> <span class="hljs-built_in">export</span> CONFIG_NAME_OR_PATH=/root/ft-oasst1/internlm_chat_7b_qlora_oasst1_e3_copy.py<br> <br> <span class="hljs-comment"># 模型训练后得到的pth格式参数存放的位置</span><br> <span class="hljs-built_in">export</span> PTH=/root/ft-oasst1/work_dirs/internlm_chat_7b_qlora_oasst1_e3_copy/epoch_3.pth<br> <br> <span class="hljs-comment"># pth文件转换为Hugging Face格式后参数存放的位置</span><br> <span class="hljs-built_in">export</span> SAVE_PATH=/root/personal_assistant/config/work_dirs/hf<br> <br> <span class="hljs-comment"># 执行参数转换</span><br> xtuner convert pth_to_hf <span class="hljs-variable">$CONFIG_NAME_OR_PATH</span> <span class="hljs-variable">$PTH</span> <span class="hljs-variable">$SAVE_PATH</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>Merge模型参数</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs routeros"> <span class="hljs-built_in">export</span> <span class="hljs-attribute">MKL_SERVICE_FORCE_INTEL</span>=1<br> <span class="hljs-built_in">export</span> <span class="hljs-attribute">MKL_THREADING_LAYER</span>=<span class="hljs-string">&#x27;GNU&#x27;</span><br> <br> # 原始模型参数存放的位置<br> <span class="hljs-built_in">export</span> <span class="hljs-attribute">NAME_OR_PATH_TO_LLM</span>=/root/ft-oasst1/internlm-chat-7b<br> <br> # Hugging Face格式参数存放的位置<br> <span class="hljs-built_in">export</span> <span class="hljs-attribute">NAME_OR_PATH_TO_ADAPTER</span>=/root/personal_assistant/config/work_dirs/hf<br> <br> # 最终Merge后的参数存放的位置<br> mkdir /root/personal_assistant/config/work_dirs/hf_merge<br> <span class="hljs-built_in">export</span> <span class="hljs-attribute">SAVE_PATH</span>=/root/personal_assistant/config/work_dirs/hf_merge<br> <br> # 执行参数Merge<br> xtuner convert merge \<br>     <span class="hljs-variable">$NAME_OR_PATH_TO_LLM</span> \<br>     <span class="hljs-variable">$NAME_OR_PATH_TO_ADAPTER</span> \<br>     <span class="hljs-variable">$SAVE_PATH</span> \<br>     --max-shard-size 2GB<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-4网页DEMO"><a href="#2-4网页DEMO" class="headerlink" title="2.4网页DEMO"></a>2.4网页DEMO</h3><p><strong>安装网页Demo所需依赖</strong></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">pip</span> install streamlit==<span class="hljs-number">1</span>.<span class="hljs-number">24</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>下载</strong><a target="_blank" rel="noopener" href="https://github.com/InternLM/InternLM">InternLM</a>项目代码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建code文件夹用于存放InternLM项目代码</span><br><span class="hljs-built_in">mkdir</span> /root/personal_assistant/code &amp;&amp; <span class="hljs-built_in">cd</span> /root/personal_assistant/code<br>git <span class="hljs-built_in">clone</span> https://github.com/InternLM/InternLM.git<br></code></pre></td></tr></table></figure>
+
+<p><strong>将</strong><code>/root/code/InternLM/web_demo.py</code> 中 29 行和 33 行的模型路径更换为Merge后存放参数的路径 <code>/root/personal_assistant/config/work_dirs/hf_merge</code></p>
+<p><strong>测试</strong></p>
+<p><img src="https://cdn.zghhui.me/img/image-20240219224350330.png" srcset="/blogs/img/loading.gif" lazyload></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blogs/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%AE%9E%E6%88%98/" class="category-chain-item">大模型实战</a>
+  
+  
+
+      </span>
+    
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blogs/categories/%E4%B9%A6%E7%94%9F%C2%B7%E6%B5%A6%E8%AF%AD/" class="category-chain-item">书生·浦语</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【书生·浦语大模型实战营】第4节：XTuner 大模型单卡低成本微调实战（作业版）</div>
+      <div>https://zghhui.github.io/blogs/posts/1974194396/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>清晨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年2月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/blogs/posts/1728366911/" title="【书生·浦语大模型实战营】第5节：LMDeploy 大模型量化部署实践（作业版）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【书生·浦语大模型实战营】第5节：LMDeploy 大模型量化部署实践（作业版）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/blogs/posts/989531512/" title="【书生·浦语大模型实战营】第3节：基于 InternLM 和 LangChain 搭建你的知识库（作业版）">
+                        <span class="hidden-mobile">【书生·浦语大模型实战营】第3节：基于 InternLM 和 LangChain 搭建你的知识库（作业版）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/blogs/js/events.js" ></script>
+<script  src="/blogs/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/blogs/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/blogs/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/blogs/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

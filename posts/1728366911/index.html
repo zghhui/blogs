@@ -16,23 +16,25 @@
   <meta name="author" content="清晨">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Hello，Blogs https:&#x2F;&#x2F;zghhui.github.io&#x2F;">
+    <meta name="description" content="1 环境配置安装 lmdeploy 12345 # 解决 ModuleNotFoundError: No module named &#x27;packaging&#x27; 问题 pip install packaging # 使用 flash_attn 的预编译包解决安装过慢问题 pip install &#x2F;root&#x2F;share&#x2F;wheels&#x2F;flash_attn-2.4.2+cu118torc">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello，Blogs">
-<meta property="og:url" content="https://zghhui.github.io/blogs/posts/1835755003/index.html">
+<meta property="og:title" content="【书生·浦语大模型实战营】第5节：LMDeploy 大模型量化部署实践（作业版）">
+<meta property="og:url" content="https://zghhui.github.io/blogs/posts/1728366911/index.html">
 <meta property="og:site_name" content="清晨">
-<meta property="og:description" content="Hello，Blogs https:&#x2F;&#x2F;zghhui.github.io&#x2F;">
+<meta property="og:description" content="1 环境配置安装 lmdeploy 12345 # 解决 ModuleNotFoundError: No module named &#x27;packaging&#x27; 问题 pip install packaging # 使用 flash_attn 的预编译包解决安装过慢问题 pip install &#x2F;root&#x2F;share&#x2F;wheels&#x2F;flash_attn-2.4.2+cu118torc">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-12-30T01:10:00.178Z">
-<meta property="article:modified_time" content="2023-12-30T02:12:40.630Z">
+<meta property="og:image" content="http://cdn.zghhui.me/img/sspu.jpg">
+<meta property="article:published_time" content="2024-02-20T03:31:18.675Z">
+<meta property="article:modified_time" content="2024-02-20T03:31:18.024Z">
 <meta property="article:author" content="清晨">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://cdn.zghhui.me/img/sspu.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Hello，Blogs - 清晨</title>
+  <title>【书生·浦语大模型实战营】第5节：LMDeploy 大模型量化部署实践（作业版） - 清晨</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -232,7 +234,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Hello，Blogs"></span>
+            <span id="subtitle" data-typed-text="【书生·浦语大模型实战营】第5节：LMDeploy 大模型量化部署实践（作业版）"></span>
           
         </div>
 
@@ -243,8 +245,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-12-30 01:10" pubdate>
-          2023年12月30日 凌晨
+        <time datetime="2024-02-20 03:31" pubdate>
+          2024年2月20日 凌晨
         </time>
       </span>
     
@@ -255,7 +257,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5 字
+          361 字
         
       </span>
     
@@ -266,7 +268,7 @@
         
         
         
-          1 分钟
+          4 分钟
         
       </span>
     
@@ -311,13 +313,40 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Hello，Blogs</h1>
+            <h1 id="seo-header">【书生·浦语大模型实战营】第5节：LMDeploy 大模型量化部署实践（作业版）</h1>
             
             
               <div class="markdown-body">
                 
-                <p><strong>Hello，Blogs</strong></p>
-<p><a href="">https://zghhui.github.io/</a></p>
+                <h2 id="1-环境配置"><a href="#1-环境配置" class="headerlink" title="1 环境配置"></a>1 环境配置</h2><p><strong>安装 lmdeploy</strong></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"> <span class="hljs-comment"># 解决 ModuleNotFoundError: No module named &#x27;packaging&#x27; 问题</span><br> <span class="hljs-attribute">pip</span> install packaging<br> <span class="hljs-comment"># 使用 flash_attn 的预编译包解决安装过慢问题</span><br> <span class="hljs-attribute">pip</span> install /root/share/wheels/flash_attn-<span class="hljs-number">2</span>.<span class="hljs-number">4</span>.<span class="hljs-number">2</span>+cu118torch2.<span class="hljs-number">0</span>cxx11abiTRUE-cp310-cp310-linux_x86_64.whl<br> <span class="hljs-attribute">pip</span> install &#x27;lmdeploy[<span class="hljs-literal">all</span>]==v0.<span class="hljs-number">1</span>.<span class="hljs-number">0</span>&#x27;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.zghhui.me/img/Snipaste_2024-02-19_22-04-43.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<h2 id="2-服务部署"><a href="#2-服务部署" class="headerlink" title="2 服务部署"></a>2 服务部署</h2><h3 id="2-1-模型转换"><a href="#2-1-模型转换" class="headerlink" title="2.1 模型转换"></a>2.1 模型转换</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"> lmdeploy convert internlm-chat-<span class="hljs-number">7</span>b  <span class="hljs-regexp">/root/</span>share<span class="hljs-regexp">/temp/m</span>odel_repos<span class="hljs-regexp">/internlm-chat-7b/</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>执行完成后将会在当前目录生成一个</strong> <code>workspace</code> 的文件夹。这里面包含的就是 TurboMind 和 Triton “模型推理”需要到的文件。</p>
+<p><img src="https://cdn.zghhui.me/img/QQ%E6%88%AA%E5%9B%BE20240219223902.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<p><img src="https://cdn.zghhui.me/img/Snipaste_2024-02-19_22-46-33.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<h3 id="2-2-TurboMind-推理-命令行本地对话"><a href="#2-2-TurboMind-推理-命令行本地对话" class="headerlink" title="2.2 TurboMind 推理+命令行本地对话"></a>2.2 TurboMind 推理+命令行本地对话</h3><p><img src="https://cdn.zghhui.me/img/Snipaste_2024-02-19_22-57-18.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<h3 id="2-3-TurboMind推理-API服务"><a href="#2-3-TurboMind推理-API服务" class="headerlink" title="2.3 TurboMind推理+API服务"></a>2.3 TurboMind推理+API服务</h3><p><strong>首先，通过下面命令启动服务：</strong></p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"> lmdeploy serve api_server /root/model/Shanghai_AI_Laboratory/<span class="hljs-built_in">int</span>ernlm-chat<span class="hljs-number">-7</span>b --model-name <span class="hljs-built_in">int</span>ernlm-chat<span class="hljs-number">-7</span>b<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.zghhui.me/img/image-20240220103834178.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<p><strong>然后，我们可以新开一个窗口，执行下面的 Client 命令。</strong></p>
+<p><img src="https://cdn.zghhui.me/img/image-20240220104134367.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<p><strong>当然，刚刚我们启动的是 API Server，自然也有相应的接口。可以直接打开</strong><code>http://127.0.0.1:23333</code> 查看，如下图所示。</p>
+<p><img src="https://cdn.zghhui.me/img/image-20240220104321528.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<p><strong>这里一共提供了 4 个 HTTP 的接口，任何语言都可以对其进行调用，我们以</strong><code>v1/chat/completions</code> 接口为例，简单试一下。</p>
+<p><strong>接口请求参数如下：</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs json"> <span class="hljs-punctuation">&#123;</span><br>   <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;internlm-chat-7b&quot;</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;messages&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;写一首春天的诗&quot;</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;temperature&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0.7</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;top_p&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;n&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;max_tokens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">512</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;stop&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;stream&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;presence_penalty&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;frequency_penalty&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;user&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;string&quot;</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;repetition_penalty&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;renew_session&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br>   <span class="hljs-attr">&quot;ignore_eos&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><br> <span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>请求结果如下：</strong></p>
+<p><img src="https://cdn.zghhui.me/img/image-20240220104846978.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<h3 id="2-4-网页-Demo-演示"><a href="#2-4-网页-Demo-演示" class="headerlink" title="2.4 网页 Demo 演示"></a>2.4 网页 Demo 演示</h3><p><strong>后端服务同上</strong></p>
+<p><strong>前端 Gradio启动：</strong></p>
+<p><img src="https://cdn.zghhui.me/img/image-20240220110256042.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<p><strong>打开网页：</strong></p>
+<p><img src="https://cdn.zghhui.me/img/image-20240220111007749.png" srcset="/blogs/img/loading.gif" lazyload></p>
 
                 
               </div>
@@ -325,6 +354,37 @@
             <hr/>
             <div>
               <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blogs/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%AE%9E%E6%88%98/" class="category-chain-item">大模型实战</a>
+  
+  
+
+      </span>
+    
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blogs/categories/%E4%B9%A6%E7%94%9F%C2%B7%E6%B5%A6%E8%AF%AD/" class="category-chain-item">书生·浦语</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
   
   
 </div>
@@ -335,8 +395,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Hello，Blogs</div>
-      <div>https://zghhui.github.io/blogs/posts/1835755003/</div>
+      <div>【书生·浦语大模型实战营】第5节：LMDeploy 大模型量化部署实践（作业版）</div>
+      <div>https://zghhui.github.io/blogs/posts/1728366911/</div>
     </div>
     <div class="license-meta">
       
@@ -348,7 +408,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年12月30日</div>
+          <div>2024年2月20日</div>
         </div>
       
       
@@ -380,15 +440,21 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/blogs/posts/3008052840/" title="动手学深度学习">
+                      <a href="/blogs/posts/367113590/" title="【书生·浦语大模型实战营】第6节：OpenCompass 大模型评测（作业版）">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">动手学深度学习</span>
+                        <span class="hidden-mobile">【书生·浦语大模型实战营】第6节：OpenCompass 大模型评测（作业版）</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/blogs/posts/1974194396/" title="【书生·浦语大模型实战营】第4节：XTuner 大模型单卡低成本微调实战（作业版）">
+                        <span class="hidden-mobile">【书生·浦语大模型实战营】第4节：XTuner 大模型单卡低成本微调实战（作业版）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
