@@ -1,0 +1,779 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blogs/img/hand.png">
+  <link rel="icon" href="/blogs/img/hand.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#848582">
+  <meta name="author" content="清晨">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本系列是参加书生·浦语大模型实战营中的学习记录，包含了实战操作中的一些细节记录。本节主要是基于 InternLM 和 LangChain 搭建个人的知识库，最终构建的结果是回答：如何改进面试技巧这一问题，总体来看，效果不错~ 先上结果图 1. 环境配置1.1 InternLM 模型部署使用以下命令从本地一个已有的pytorch 2.0.1 的环境： 123 bash &#x2F;root&#x2F;share&#x2F;ins">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【书生·浦语大模型实战营】第3节：基于 InternLM 和 LangChain 搭建你的知识库（作业版）">
+<meta property="og:url" content="https://zghhui.github.io/blogs/posts/989531512/index.html">
+<meta property="og:site_name" content="清晨">
+<meta property="og:description" content="本系列是参加书生·浦语大模型实战营中的学习记录，包含了实战操作中的一些细节记录。本节主要是基于 InternLM 和 LangChain 搭建个人的知识库，最终构建的结果是回答：如何改进面试技巧这一问题，总体来看，效果不错~ 先上结果图 1. 环境配置1.1 InternLM 模型部署使用以下命令从本地一个已有的pytorch 2.0.1 的环境： 123 bash &#x2F;root&#x2F;share&#x2F;ins">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://cdn.zghhui.me/img/sspu.jpg">
+<meta property="article:published_time" content="2024-02-19T23:25:01.192Z">
+<meta property="article:modified_time" content="2024-02-19T23:25:00.802Z">
+<meta property="article:author" content="清晨">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://cdn.zghhui.me/img/sspu.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>【书生·浦语大模型实战营】第3节：基于 InternLM 和 LangChain 搭建你的知识库（作业版） - 清晨</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/blogs/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/blogs/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/blogs/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"zghhui.github.io","root":"/blogs/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":21844343,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/blogs/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/blogs/js/utils.js" ></script>
+  <script  src="/blogs/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+    <!-- 51.la Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('//js.users.51.la/21844343.js');
+      }
+    </script>
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/blogs/">
+      <strong>清晨</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blogs/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blogs/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blogs/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blogs/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blogs/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/blogs/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="【书生·浦语大模型实战营】第3节：基于 InternLM 和 LangChain 搭建你的知识库（作业版）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-02-20 07:25" pubdate>
+          2024年2月20日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【书生·浦语大模型实战营】第3节：基于 InternLM 和 LangChain 搭建你的知识库（作业版）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本系列是参加书生·浦语大模型实战营中的学习记录，包含了实战操作中的一些细节记录。本节主要是基于 InternLM 和 LangChain 搭建个人的知识库，最终构建的结果是回答：如何改进面试技巧这一问题，总体来看，效果不错~</p>
+<h2 id="先上结果图"><a href="#先上结果图" class="headerlink" title="先上结果图"></a>先上结果图</h2><p><img src="https://cdn.zghhui.me/img/Snipaste_2024-02-19_21-18-29.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<h2 id="1-环境配置"><a href="#1-环境配置" class="headerlink" title="1. 环境配置"></a>1. 环境配置</h2><h3 id="1-1-InternLM-模型部署"><a href="#1-1-InternLM-模型部署" class="headerlink" title="1.1 InternLM 模型部署"></a>1.1 InternLM 模型部署</h3><p><strong>使用以下命令从本地一个已有的</strong><code>pytorch 2.0.1</code> 的环境：</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs applescript"> bash<br> /root/share/install_conda_env_internlm_base.sh InternLM<br> conda <span class="hljs-built_in">activate</span> InternLM<br></code></pre></td></tr></table></figure>
+
+<p><strong>并在环境中安装运行 demo 所需要的依赖。</strong></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs apache"> <span class="hljs-comment"># 升级pip</span><br> <span class="hljs-attribute">python</span> -m pip install --upgrade pip<br> <br> <span class="hljs-attribute">pip</span> install modelscope==<span class="hljs-number">1</span>.<span class="hljs-number">9</span>.<span class="hljs-number">5</span><br> <span class="hljs-attribute">pip</span> install transformers==<span class="hljs-number">4</span>.<span class="hljs-number">35</span>.<span class="hljs-number">2</span><br> <span class="hljs-attribute">pip</span> install streamlit==<span class="hljs-number">1</span>.<span class="hljs-number">24</span>.<span class="hljs-number">0</span><br> <span class="hljs-attribute">pip</span> install sentencepiece==<span class="hljs-number">0</span>.<span class="hljs-number">1</span>.<span class="hljs-number">99</span><br> <span class="hljs-attribute">pip</span> install accelerate==<span class="hljs-number">0</span>.<span class="hljs-number">24</span>.<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-2-模型下载"><a href="#1-2-模型下载" class="headerlink" title="1.2 模型下载"></a>1.2 模型下载</h3><p><strong>在作业2中已完成</strong></p>
+<h3 id="1-3-LangChain-相关环境配置"><a href="#1-3-LangChain-相关环境配置" class="headerlink" title="1.3 LangChain 相关环境配置"></a>1.3 LangChain 相关环境配置</h3><p><strong>在已完成 InternLM 的部署基础上，还需要安装以下依赖包：</strong></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs apache"> <span class="hljs-attribute">pip</span> install langchain==<span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">292</span><br> <span class="hljs-attribute">pip</span> install gradio==<span class="hljs-number">4</span>.<span class="hljs-number">4</span>.<span class="hljs-number">0</span><br> <span class="hljs-attribute">pip</span> install chromadb==<span class="hljs-number">0</span>.<span class="hljs-number">4</span>.<span class="hljs-number">15</span><br> <span class="hljs-attribute">pip</span> install sentence-transformers==<span class="hljs-number">2</span>.<span class="hljs-number">2</span>.<span class="hljs-number">2</span><br> <span class="hljs-attribute">pip</span> install unstructured==<span class="hljs-number">0</span>.<span class="hljs-number">10</span>.<span class="hljs-number">30</span><br> <span class="hljs-attribute">pip</span> install markdown==<span class="hljs-number">3</span>.<span class="hljs-number">3</span>.<span class="hljs-number">7</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>下载开源词向量模型Sentence Transformer：</strong></p>
+<p><img src="https://cdn.zghhui.me/img/Snipaste_2024-02-19_20-08-46.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<p><strong>执行 python download_hf.py进行下载</strong></p>
+<h3 id="1-4-下载-NLTK-相关资源"><a href="#1-4-下载-NLTK-相关资源" class="headerlink" title="1.4 下载 NLTK 相关资源"></a>1.4 下载 NLTK 相关资源</h3><p><strong>用以下命令下载 nltk 资源并解压到服务器上：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"> <span class="hljs-built_in">cd</span> /root<br> git <span class="hljs-built_in">clone</span> https://gitee.com/yzy0612/nltk_data.git  --branch gh-pages<br> <span class="hljs-built_in">cd</span> nltk_data<br> <span class="hljs-built_in">mv</span> packages/*  ./<br> <span class="hljs-built_in">cd</span> tokenizers<br> unzip punkt.zip<br> <span class="hljs-built_in">cd</span> ../taggers<br> unzip averaged_perceptron_tagger.zip<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-5-下载本项目代码"><a href="#1-5-下载本项目代码" class="headerlink" title="1.5 下载本项目代码"></a>1.5 下载本项目代码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"> <span class="hljs-built_in">cd</span> /root/data<br> git <span class="hljs-built_in">clone</span> https://github.com/InternLM/tutorial<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-知识库搭建"><a href="#2-知识库搭建" class="headerlink" title="2 知识库搭建"></a>2 知识库搭建</h2><h3 id="2-1-数据收集"><a href="#2-1-数据收集" class="headerlink" title="2.1 数据收集"></a>2.1 数据收集</h3><p><strong>克隆大模型工具开源仓库到本地作为语料库来源：</strong></p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs crmsh"> <span class="hljs-comment"># 进入到数据库盘</span><br> cd /root/data<br> <span class="hljs-comment"># clone 上述开源仓库</span><br> git <span class="hljs-keyword">clone</span> <span class="hljs-title">https</span>://gitee.com/open-compass/opencompass.git<br> git <span class="hljs-keyword">clone</span> <span class="hljs-title">https</span>://gitee.com/InternLM/lmdeploy.git<br> git <span class="hljs-keyword">clone</span> <span class="hljs-title">https</span>://gitee.com/InternLM/xtuner.git<br> git <span class="hljs-keyword">clone</span> <span class="hljs-title">https</span>://gitee.com/InternLM/InternLM-XComposer.git<br> git <span class="hljs-keyword">clone</span> <span class="hljs-title">https</span>://gitee.com/InternLM/lagent.git<br> git <span class="hljs-keyword">clone</span> <span class="hljs-title">https</span>://gitee.com/InternLM/InternLM.git<br></code></pre></td></tr></table></figure>
+
+<p><strong>接着，为语料处理方便，我们将选用上述仓库中所有的 markdown、txt 文件作为示例语料库。注意，也可以选用其中的代码文件加入到知识库中，但需要针对代码文件格式进行额外处理（因为代码文件对逻辑联系要求较高，且规范性较强，在分割时最好基于代码模块进行分割再加入向量数据库）。</strong></p>
+<p><strong>我们首先将上述仓库中所有满足条件的文件路径找出来，我们定义一个函数，该函数将递归指定文件夹路径，返回其中所有满足条件（即后缀名为 .md 或者 .txt 的文件）的文件路径：</strong></p>
+<p><img src="https://cdn.zghhui.me/img/Snipaste_2024-02-19_20-26-35.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<h3 id="2-2-加载数据"><a href="#2-2-加载数据" class="headerlink" title="2.2 加载数据"></a>2.2 加载数据</h3><p><strong>得到所有目标文件路径之后，我们可以使用 LangChain 提供的 FileLoader 对象来加载目标文件，得到由目标文件解析出的纯文本内容。由于不同类型的文件需要对应不同的 FileLoader，我们判断目标文件类型，并针对性调用对应类型的 FileLoader，同时，调用 FileLoader 对象的 load 方法来得到加载之后的纯文本对象：</strong></p>
+<p><img src="https://cdn.zghhui.me/img/Snipaste_2024-02-19_20-27-04-1708384760569-7.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<h3 id="2-3-构建向量数据库"><a href="#2-3-构建向量数据库" class="headerlink" title="2.3 构建向量数据库"></a>2.3 构建向量数据库</h3><p><strong>得到该列表之后，我们就可以将它引入到 LangChain 框架中构建向量数据库。由纯文本对象构建向量数据库，我们需要先对文本进行分块，接着对文本块进行向量化。</strong></p>
+<p><strong>LangChain 提供了多种文本分块工具，此处我们使用字符串递归分割器，并选择分块大小为 500，块重叠长度为 150</strong></p>
+<p><img src="https://cdn.zghhui.me/img/Snipaste_2024-02-19_20-28-36-1708384918442-17.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<p><strong>接着我们选用开源词向量模型</strong><a target="_blank" rel="noopener" href="https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2">Sentence Transformer</a>来进行文本向量化。LangChain 提供了直接引入 HuggingFace 开源社区中的模型进行向量化的接口：</p>
+<p><img src="https://cdn.zghhui.me/img/Snipaste_2024-02-19_20-29-33.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<p><strong>同时，考虑到 Chroma 是目前最常用的入门数据库，我们选择 Chroma 作为向量数据库，基于上文分块后的文档以及加载的开源向量化模型，将语料加载到指定路径下的向量数据库：</strong></p>
+<p><img src="https://cdn.zghhui.me/img/Snipaste_2024-02-19_20-30-30.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<p><strong>运行上述脚本，即可在本地构建已持久化的向量数据库，后续直接导入该数据库即可，无需重复构建。</strong></p>
+<p><img src="https://cdn.zghhui.me/img/Snipaste_2024-02-19_20-58-59.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<h2 id="3-InternLM-接入-LangChain"><a href="#3-InternLM-接入-LangChain" class="headerlink" title="3 InternLM 接入 LangChain"></a>3 InternLM 接入 LangChain</h2><p><strong>为便捷构建 LLM 应用，我们需要基于本地部署的 InternLM，继承 LangChain 的 LLM 类自定义一个 InternLM LLM 子类，从而实现将 InternLM 接入到 LangChain 框架中。完成 LangChain 的自定义 LLM 子类之后，可以以完全一致的方式调用 LangChain 的接口，而无需考虑底层模型调用的不一致。</strong></p>
+<p><strong>基于本地部署的 InternLM 自定义 LLM 类并不复杂，我们只需从 LangChain.llms.base.LLM 类继承一个子类，并重写构造函数与</strong><code>_call</code> 函数即可：</p>
+<p><img src="https://cdn.zghhui.me/img/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20240219203516.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<p><strong>在上述类定义中，我们分别重写了构造函数和</strong><code>_call</code> 函数：对于构造函数，我们在对象实例化的一开始加载本地部署的 InternLM 模型，从而避免每一次调用都需要重新加载模型带来的时间过长；<code>_call</code> 函数是 LLM 类的核心函数，LangChain 会调用该函数来调用 LLM，在该函数中，我们调用已实例化模型的 chat 方法，从而实现对模型的调用并返回调用结果。</p>
+<p><strong>在整体项目中，我们将上述代码封装为 LLM.py，后续将直接从该文件中引入自定义的 LLM 类。</strong></p>
+<h2 id="4-构建检索问答链"><a href="#4-构建检索问答链" class="headerlink" title="4 构建检索问答链"></a>4 构建检索问答链</h2><p><strong>LangChain 通过提供检索问答链对象来实现对于 RAG 全流程的封装。所谓检索问答链，即通过一个对象完成检索增强问答（即RAG）的全流程。我们可以调用一个 LangChain 提供的</strong><code>RetrievalQA</code> 对象，通过初始化时填入已构建的数据库和自定义 LLM 作为参数，来简便地完成检索增强问答的全流程，LangChain 会自动完成基于用户提问进行检索、获取相关文档、拼接为合适的 Prompt 并交给 LLM 问答的全部流程。</p>
+<h3 id="4-1-加载向量数据库"><a href="#4-1-加载向量数据库" class="headerlink" title="4.1 加载向量数据库"></a>4.1 加载向量数据库</h3><p><strong>首先我们需要将上文构建的向量数据库导入进来，我们可以直接通过 Chroma 以及上文定义的词向量模型来加载已构建的数据库：</strong></p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs clean"> <span class="hljs-keyword">from</span> langchain.vectorstores <span class="hljs-keyword">import</span> Chroma<br> <span class="hljs-keyword">from</span> langchain.embeddings.huggingface <span class="hljs-keyword">import</span> HuggingFaceEmbeddings<br> <span class="hljs-keyword">import</span> os<br> <br> # 定义 Embeddings<br> embeddings = HuggingFaceEmbeddings(model_name=<span class="hljs-string">&quot;/root/data/model/sentence-transformer&quot;</span>)<br> <br> # 向量数据库持久化路径<br> persist_directory = <span class="hljs-string">&#x27;data_base/vector_db/chroma&#x27;</span><br> <br> # 加载数据库<br> vectordb = Chroma(<br>     persist_directory=persist_directory, <br>     embedding_function=embeddings<br> )<br></code></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" srcset="/blogs/img/loading.gif" lazyload alt="点击并拖拽以移动"></p>
+<p><strong>上述代码得到的</strong><code>vectordb</code> 对象即为我们已构建的向量数据库对象，该对象可以针对用户的 <code>query</code> 进行语义向量检索，得到与用户提问相关的知识片段。</p>
+<h3 id="4-2-实例化自定义-LLM-与-Prompt-Template"><a href="#4-2-实例化自定义-LLM-与-Prompt-Template" class="headerlink" title="4.2 实例化自定义 LLM 与 Prompt Template"></a>4.2 实例化自定义 LLM 与 Prompt Template</h3><p><strong>接着，我们实例化一个基于 InternLM 自定义的 LLM 对象：</strong></p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs abnf"> from LLM import InternLM_LLM<br> llm <span class="hljs-operator">=</span> InternLM_LLM(model_path <span class="hljs-operator">=</span> <span class="hljs-string">&quot;/root/data/model/Shanghai_AI_Laboratory/internlm-chat-7b&quot;</span>)<br> llm.predict(<span class="hljs-string">&quot;你是谁&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p><strong>构建检索问答链，还需要构建一个 Prompt Template，该 Template 其实基于一个带变量的字符串，在检索之后，LangChain 会将检索到的相关文档片段填入到 Template 的变量中，从而实现带知识的 Prompt 构建。我们可以基于 LangChain 的 Template 基类来实例化这样一个 Template 对象：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"> <span class="hljs-keyword">from</span> langchain.prompts <span class="hljs-keyword">import</span> PromptTemplate<br> <br> <span class="hljs-comment"># 我们所构造的 Prompt 模板</span><br> template = <span class="hljs-string">&quot;&quot;&quot;使用以下上下文来回答用户的问题。如果你不知道答案，就说你不知道。总是使用中文回答。</span><br><span class="hljs-string"> 问题: &#123;question&#125;</span><br><span class="hljs-string"> 可参考的上下文：</span><br><span class="hljs-string"> ···</span><br><span class="hljs-string"> &#123;context&#125;</span><br><span class="hljs-string"> ···</span><br><span class="hljs-string"> 如果给定的上下文无法让你做出回答，请回答你不知道。</span><br><span class="hljs-string"> 有用的回答:&quot;&quot;&quot;</span><br> <br> <span class="hljs-comment"># 调用 LangChain 的方法来实例化一个 Template 对象，该对象包含了 context 和 question 两个变量，在实际调用时，这两个变量会被检索到的文档片段和用户提问填充</span><br> QA_CHAIN_PROMPT = PromptTemplate(input_variables=[<span class="hljs-string">&quot;context&quot;</span>,<span class="hljs-string">&quot;question&quot;</span>],template=template)<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-3-构建检索问答链"><a href="#4-3-构建检索问答链" class="headerlink" title="4.3 构建检索问答链"></a>4.3 构建检索问答链</h3><p><strong>最后，可以调用 LangChain 提供的检索问答链构造函数，基于我们的自定义 LLM、Prompt Template 和向量知识库来构建一个基于 InternLM 的检索问答链：</strong></p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs elm"> from langchain.chains <span class="hljs-keyword">import</span> RetrievalQA<br> <br> qa_chain = <span class="hljs-type">RetrievalQA</span>.from_chain_<span class="hljs-keyword">type</span>(llm,retriever=vectordb.as_retriever(),return_source_documents=<span class="hljs-type">True</span>,chain_type_kwargs=&#123;&quot;prompt&quot;:<span class="hljs-type">QA_CHAIN_PROMPT</span>&#125;)<br></code></pre></td></tr></table></figure>
+
+<p><strong>得到的</strong><code>qa_chain</code> 对象即可以实现我们的核心功能，即基于 InternLM 模型的专业知识库助手。我们可以对比该检索问答链和纯 LLM 的问答效果：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs routeros"> # 检索问答链回答效果<br> question = <span class="hljs-string">&quot;什么是InternLM&quot;</span><br> result = qa_chain(&#123;<span class="hljs-string">&quot;query&quot;</span>: question&#125;)<br> <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;检索问答链回答 question 的结果：&quot;</span>)<br> <span class="hljs-built_in">print</span>(result[<span class="hljs-string">&quot;result&quot;</span>])<br> <br> # 仅 LLM 回答效果<br> result_2 = llm(question)<br> <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;大模型回答 question 的结果：&quot;</span>)<br> <span class="hljs-built_in">print</span>(result_2)<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-部署-Web-Demo"><a href="#5-部署-Web-Demo" class="headerlink" title="5 部署 Web Demo"></a>5 部署 Web Demo</h2><p><strong>在完成上述核心功能后，我们可以基于 Gradio 框架将其部署到 Web 网页，从而搭建一个小型 Demo，便于测试与使用。</strong></p>
+<p><strong>我们首先将上文的代码内容封装为一个返回构建的检索问答链对象的函数，并在启动 Gradio 的第一时间调用该函数得到检索问答链对象，后续直接使用该对象进行问答对话，从而避免重复加载模型：</strong></p>
+<p><img src="https://cdn.zghhui.me/img/QQ%E6%88%AA%E5%9B%BE20240219204715.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<p><strong>通过将上述代码封装为 run_gradio.py 脚本，直接通过 python 命令运行，即可在本地启动知识库助手的 Web Demo，默认会在 7860 端口运行，接下来将服务器端口映射到本地端口即可访问：</strong></p>
+<p><img src="https://cdn.zghhui.me/img/cc7eff7c76e34ae1ae45ca3acf34ba44.png" srcset="/blogs/img/loading.gif" lazyload></p>
+<p><img src="https://cdn.zghhui.me/img/Snipaste_2024-02-19_21-18-29-1708384875226-14.png" srcset="/blogs/img/loading.gif" lazyload></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blogs/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%AE%9E%E6%88%98/" class="category-chain-item">大模型实战</a>
+  
+  
+
+      </span>
+    
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blogs/categories/%E4%B9%A6%E7%94%9F%C2%B7%E6%B5%A6%E8%AF%AD/" class="category-chain-item">书生·浦语</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【书生·浦语大模型实战营】第3节：基于 InternLM 和 LangChain 搭建你的知识库（作业版）</div>
+      <div>https://zghhui.github.io/blogs/posts/989531512/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>清晨</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年2月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/blogs/posts/543306722/" title="【书生·浦语大模型实战营】第2节：轻松玩转书生·浦语大模型趣味 Demo（作业版）">
+                        <span class="hidden-mobile">【书生·浦语大模型实战营】第2节：轻松玩转书生·浦语大模型趣味 Demo（作业版）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/blogs/js/events.js" ></script>
+<script  src="/blogs/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/blogs/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/blogs/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/blogs/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
